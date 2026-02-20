@@ -59,7 +59,7 @@ create a file named `.env` in the root directory. You can use the provided `.env
 # GCP Configuration
 GCP_PROJECT_ID      = "your-real-project-id"
 GCP_REGION          = "your-region"
-PATH_TO_GCP_KEYFILE = "./gcp-key.json"  # Point this to your downloaded JSON key
+PATH_TO_GCP_KEYFILE = "gcp-key.json file path"  # Point this to your downloaded JSON key
 
 # LocalStack/AWS Configuration (Standard for LocalStack)
 AWS_ACCESS_KEY_ID       =test
@@ -79,7 +79,7 @@ AWS_DEFAULT_REGION      =us-east-1
 ```hcl
 gcp_project_id          = "your-project-id"
 gcp_region              = "your-region"  # deafault is us-central1
-gcp_keyfile_path        = "your-key.json"
+gcp_keyfile_path        = "gcp-key.json file-path"
 db_user                 = "your-db-user" # default is postgres
 db_pass                 = "your-secure-password"
 db_name                 = "your-db-name" # default is pipelinedb
@@ -150,7 +150,7 @@ aws --endpoint-url=http://localhost:4566 s3 cp test-event.json s3://hybrid-cloud
 Verify the data reached the cloud:
 
 ```bash
-gcloud sql connect hybrid-pipeline-sql-instance --user=postgres
+gcloud sql connect hybrid-pipeline-sql-instance --user=<your-db_user>
 # Run: SELECT * FROM records WHERE id = 'xyz-789';
 ```
 ### Verify Data via GCP Console UI
