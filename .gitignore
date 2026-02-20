@@ -1,2 +1,20 @@
-.env
+# LocalStack Data
 localstack_data/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+terraform/terraform.tfvars
+.terraform.tfstate.lock.info
+.terraform.lock.hcl
+
+# Environment & Secrets
+.env
+*.json
+!submission.json
+!test-event.json
+
+# Python
+__pycache__/
+*.py[cod]

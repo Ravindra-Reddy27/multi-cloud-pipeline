@@ -5,20 +5,37 @@ services:
     container_name: "localstack_main"
     image: localstack/localstack:latest
     ports:
-      - "127.0.0.1:4566:4566"            # LocalStack Gateway
-      - "127.0.0.1:4510-4559:4510-4559"  # External services port range
+      - "127.0.0.1:4566:4566"
+      - "127.0.0.1:4510-4559:4510-4559"
     environment:
       - DEBUG=1
       - SERVICES=s3,sqs,dynamodb,iam
       - PERSISTENCE=1
-      # CHANGE 1: Point DATA_DIR to a safe persistence path
       - DATA_DIR=/var/lib/localstack
     volumes:
-      # CHANGE 2: Mount the volume to the new DATA_DIR path
       - "./localstack_data:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
     healthcheck:
       test: ["CMD", "awslocal", "health"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 5s   
+      retries: 5    
+      start_period: 20s # Give it 20s grace period before checking
+
+  # [cite_start]NEW SERVICE: The Bridge [cite: 175-180]
+  bridge:
+    build: .
+    container_name: "bridge_app"
+    depends_on:
+      localstack:
+        condition: service_started
+    environment:
+      - PYTHONUNBUFFERED=1                # <--- ADD THIS LINE
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID}
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-key.json
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ENDPOINT_URL=http://localstack:4566
+    volumes:
+      - ${PATH_TO_GCP_KEYFILE}:/app/gcp-key.json
